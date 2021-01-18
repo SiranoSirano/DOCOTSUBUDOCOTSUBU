@@ -1,5 +1,4 @@
 package dao;
-//MUTTERテーブルを担当するDAO
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -12,56 +11,64 @@ import java.util.List;
 import model.Mutter;
 
 public class MutterDAO {
-	//データベース接続に使用する情報
-	private final String JDBC_URL ="jdbc:h2:tcp://localhost/~/docoTsubu";
+	//	DB接続に使用する情報
+	private final String JDBC_URL = "jdbc:h2:~/DOCOTSUBUDOCOTSUBU";
 	private final String DB_USER = "sa";
-	private final String DB_PASS = "";
+	private final String DB_PASS = "aaa";
 
+	//SELECTしてArrayListに入力内容を格納する
 	public List<Mutter> findAll(){
 		List<Mutter> mutterList = new ArrayList<>();
 
-		//データベース接続
+		//		DBとの接続
 		try(Connection conn = DriverManager.getConnection(JDBC_URL,DB_USER,DB_PASS)){
-			//SELECT文の準備
-			String sql = "SELECT ID,NAME,TEXT FROM MUTTER ORDER BY ID DESC";
+			//		SELECT文の準備
+			String sql = "SELECT ID, NAME ,TEXT FROM MUTTER ORDER BY ID ASC ";
 			PreparedStatement pStmt = conn.prepareStatement(sql);
 
-			//SELECTの実行
-			ResultSet rs =pStmt.executeQuery();
+			//			SELECTの実行
+			ResultSet rs = pStmt.executeQuery();
 
-			//SELECT文の結果をArrayListに格納
+			//			SELECT文の結果をArrayListに格納
 			while(rs.next()) {
 				int id = rs.getInt("ID");
 				String userName = rs.getString("NAME");
-				String text = rs.getString("TEXT");
+				String text =rs.getString("TEXT");
 				Mutter mutter = new Mutter(id,userName,text);
 				mutterList.add(mutter);
 			}
-		}catch(SQLException e) {
+		}catch(SQLException e){
 			e.printStackTrace();
 			return null;
 		}return mutterList;
 	}
+	//	INSERTしてSQLを実行、そして入力内容を出力
 	public boolean create(Mutter mutter) {
-		//データベース接続
+		//			DBとの接続
 		try(Connection conn = DriverManager.getConnection(JDBC_URL,DB_USER,DB_PASS)){
-			//INSERT文の準備（idは自動連番なので指定しなくてよい）
-			String sql = "INSERT INTO MUTTER(NAME,TEXT) VALUES(?,?)";
+			//				INSERT文の準備
+			//				?,?がインサート文で挿入される
+			String sql = "INSERT INTO MUTTER(NAME,TEXT) VALUES (?,?)";
 			PreparedStatement pStmt = conn.prepareStatement(sql);
 
-			//INSERT文中の「？」に使用する値を設定しSQLを完成
-			pStmt.setString(1, mutter.getUserName());
-			pStmt.setString(2, mutter.getText());
+			//				INSERT文中の？に使用する値を設定しSQLを完成
+			pStmt.setString(1,mutter.getUserName());
+			pStmt.setString(2,mutter.getText());
 
-			//INSERT文を実行（resultには追加された行数が代入される）
+			//				INSERT文を実行(resultには追加された行数が代入される)
 			int result = pStmt.executeUpdate();
 			if(result != 1) {
 				return false;
 			}
-		}catch (SQLException e) {
+		}catch(SQLException e) {
 			e.printStackTrace();
 			return false;
 		}
 		return true;
 	}
 }
+
+
+
+
+

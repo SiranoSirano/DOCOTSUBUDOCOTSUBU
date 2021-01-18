@@ -7,7 +7,7 @@ User loginUser = (User) session.getAttribute("loginUser");
 
 //アプリケーションスコープに保存されたリストを取得
 @SuppressWarnings("unchecked")
-List<Mutter> mutterList = (List<Mutter>) application.getAttribute("mutterList");
+List<Mutter> mutterList = (List<Mutter>)request.getAttribute("mutterList");
 
 //リクエストスコープに保存されたエラーメッセージを取得
 String errorMsg = (String) request.getAttribute("errorMsg");
@@ -40,5 +40,6 @@ String errorMsg = (String) request.getAttribute("errorMsg");
 <% for(Mutter mutter : mutterList){ %>
 	<p><%= mutter.getUserName() %>:<%= mutter.getText() %></p>
 <% } %>
+
 </body>
 </html>

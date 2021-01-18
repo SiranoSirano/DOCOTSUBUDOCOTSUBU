@@ -1,11 +1,9 @@
 package servlet;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -13,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import model.GetMutterListLogic;
 import model.Mutter;
 import model.PostMutterLogic;
 import model.User;
@@ -30,16 +29,11 @@ public class Main extends HttpServlet {
 	@SuppressWarnings("unchecked")
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		//入力した社員情報のリストを取得してアプリケーションスコープに保存
-		ServletContext application = this.getServletContext();
-		List<Mutter> mutterList = (List<Mutter>) application.getAttribute("mutterList");
-		//		List<Mutter>の未キャストが原因で警告文→ジェネリックスを使って解消
-
-		//		リストを取得できなかった時は、新規作成してアプリケーションスコープに保存
-		if(mutterList == null) {
-			mutterList = new ArrayList<>();
-			application.setAttribute("mutterList", mutterList);
-		}
+		//アプリケーションスコープからリクエストスコープに変更、スコープに保存して取得する方法からDBに置き換え
+		//リストを取得してDAOからDBに接続
+		GetMutterListLogic getMutterListLogic = new GetMutterListLogic();
+		List<Mutter> mutterList = getMutterListLogic.execute();
+		request.setAttribute("mutterList", mutterList);
 
 		//ログインしているか確かめるためセッションスコープからユーザー情報を取得
 		HttpSession session = request.getSession();
@@ -49,6 +43,7 @@ public class Main extends HttpServlet {
 			//ログインしていないときはリダイレクト
 			response.sendRedirect("/DOCOTSUBUDOCOTSUBU/index.jsp");
 		}else {
+			//			ログイン済み
 			//ログインしているときはフォワード
 			RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/main.jsp");
 			dispatcher.forward(request, response);
@@ -66,10 +61,6 @@ public class Main extends HttpServlet {
 
 		//			入力値チェック
 		if((text != null) && (text.length() != 0)) {
-			//				アプリケーションスコープに保存された社員情報リストを取得
-			ServletContext application = this.getServletContext();
-			List<Mutter> mutterList = (List<Mutter>) application.getAttribute("mutterList");
-
 			//			セッションスコープに保存された社員情報を取得
 			HttpSession session = request.getSession();
 			User loginUser = (User) session.getAttribute("loginUser");
@@ -77,15 +68,15 @@ public class Main extends HttpServlet {
 			//			入力内容をリストに追加
 			Mutter mutter = new Mutter(loginUser.getName(),text);
 			PostMutterLogic postMutterLogic = new PostMutterLogic();
-			postMutterLogic.execute(mutter,mutterList);
-
-			//			アプリケーションスコープにリストを保存
-			application.setAttribute("mutterList", mutterList);
-
+			postMutterLogic.execute(mutter);
 		}else {
 			//			エラーメッセージをリクエストスコープに保存
 			request.setAttribute("errorMSG", "登録内容が入力されていません");
 		}
+		//		入力内容リストを取得して、リクエストスコープに保存
+		GetMutterListLogic getMutterListLogic = new GetMutterListLogic();
+		List<Mutter> mutterList =getMutterListLogic.execute();
+		request.setAttribute("mutterList",mutterList);
 
 		//			メイン画面にフォワード
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/main.jsp");
