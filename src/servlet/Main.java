@@ -11,9 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import model.GetMutterListLogic;
-import model.Mutter;
-import model.PostMutterLogic;
+import model.Employee;
+import model.GetEmployeeListLogic;
+import model.PostEmployeeLogic;
 import model.User;
 
 
@@ -26,14 +26,14 @@ public class Main extends HttpServlet {
 
 
 	@Override
-	@SuppressWarnings("unchecked")
+
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		//アプリケーションスコープからリクエストスコープに変更、スコープに保存して取得する方法からDBに置き換え
 		//リストを取得してDAOからDBに接続
-		GetMutterListLogic getMutterListLogic = new GetMutterListLogic();
-		List<Mutter> mutterList = getMutterListLogic.execute();
-		request.setAttribute("mutterList", mutterList);
+		GetEmployeeListLogic getEmployeeListLogic = new GetEmployeeListLogic();
+		List<Employee> employeeList = getEmployeeListLogic.execute();
+		request.setAttribute("employeeList", employeeList);
 
 		//ログインしているか確かめるためセッションスコープからユーザー情報を取得
 		HttpSession session = request.getSession();
@@ -41,7 +41,7 @@ public class Main extends HttpServlet {
 
 		if(loginUser == null) {
 			//ログインしていないときはリダイレクト
-			response.sendRedirect("/DOCOTSUBUDOCOTSUBU/index.jsp");
+			response.sendRedirect("/社員情報管理システムDB接続/index.jsp");
 		}else {
 			//			ログイン済み
 			//ログインしているときはフォワード
@@ -52,7 +52,7 @@ public class Main extends HttpServlet {
 
 
 	@Override
-	@SuppressWarnings("unchecked")
+
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		//			リクエストパラメータの取得
@@ -66,17 +66,17 @@ public class Main extends HttpServlet {
 			User loginUser = (User) session.getAttribute("loginUser");
 
 			//			入力内容をリストに追加
-			Mutter mutter = new Mutter(loginUser.getName(),text);
-			PostMutterLogic postMutterLogic = new PostMutterLogic();
-			postMutterLogic.execute(mutter);
+			Employee employee = new Employee(loginUser.getName(),text);
+			PostEmployeeLogic postEmployeeLogic = new PostEmployeeLogic();
+			postEmployeeLogic.execute(employee);
 		}else {
 			//			エラーメッセージをリクエストスコープに保存
 			request.setAttribute("errorMSG", "登録内容が入力されていません");
 		}
 		//		入力内容リストを取得して、リクエストスコープに保存
-		GetMutterListLogic getMutterListLogic = new GetMutterListLogic();
-		List<Mutter> mutterList =getMutterListLogic.execute();
-		request.setAttribute("mutterList",mutterList);
+		GetEmployeeListLogic getEmployeeListLogic = new GetEmployeeListLogic();
+		List<Employee> employeeList =getEmployeeListLogic.execute();
+		request.setAttribute("employeeList",employeeList);
 
 		//			メイン画面にフォワード
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsp/main.jsp");

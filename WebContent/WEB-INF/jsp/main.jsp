@@ -1,13 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ page import ="model.User,model.Mutter,java.util.List" %>
+<%@ page import ="model.*,servlet.*,dao.*,java.util.List" %>
 <%
- //セッションスコープに保存されたユーザー情報を取得
+//セッションスコープに保存されたユーザー情報を取得
 User loginUser = (User) session.getAttribute("loginUser");
 
-//アプリケーションスコープに保存されたリストを取得
+//リクエストスコープに保存されたリストを取得
 @SuppressWarnings("unchecked")
-List<Mutter> mutterList = (List<Mutter>)request.getAttribute("mutterList");
+List<Employee> employeeList = (List<Employee>)request.getAttribute("employeeList");
 
 //リクエストスコープに保存されたエラーメッセージを取得
 String errorMsg = (String) request.getAttribute("errorMsg");
@@ -21,24 +21,30 @@ String errorMsg = (String) request.getAttribute("errorMsg");
 <body>
 <h1>社員情報管理システムメイン</h1>
 <p><%= loginUser.getName() %>さんはログイン中です
-<a href ="/DOCOTSUBUDOCOTSUBU/Logout">ログアウト</a>
+<a href ="/社員情報管理システムDB接続/Logout">ログアウト</a>
 </p>
 
-<p><a href="/DOCOTSUBUDOCOTSUBU/Main">更新</a></p>
-<form action="/DOCOTSUBUDOCOTSUBU/Main" method ="post">
+<p><a href="/社員情報管理システムDB接続/Main">更新</a></p>
+<form action="/社員情報管理システムDB接続/Main" method ="post">
 <input type="text" name ="text">
 <input type ="submit" value="入力" >
 </form>
 
 <%--　エラーメッセージのerrorMsgがある場合はそこに遷移して表示する --%>
-<% if(errorMsg != null) {%>
-<p><%= errorMsg %>><p>
-<% } %>
+<%
+if(errorMsg != null) {
+%>
+<p><%=errorMsg%>><p>
+<%
+}
+%>
 
 <%-- ArrayListに格納されたインスタンスを先頭から取得、名前と入力内容を紐づけて表示 --%>
 <%-- 拡張for文を使って取り出していく --%>
-<% for(Mutter mutter : mutterList){ %>
-	<p><%= mutter.getUserName() %>:<%= mutter.getText() %></p>
+<%
+for(Employee Employee : employeeList){
+%>
+	<p><%= Employee.getUserName() %>:<%= Employee.getText() %></p>
 <% } %>
 
 </body>

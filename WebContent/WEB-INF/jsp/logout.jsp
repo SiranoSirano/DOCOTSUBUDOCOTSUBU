@@ -9,6 +9,6 @@
 <body>
 <h1>社員情報管理システムログアウト</h1>
 <p>ログアウトしました</p>
-<a href ="/DOCOTSUBUDOCOTSUBU/index.jsp">TOPへ戻る</a>
+<a href ="/社員情報管理システムDB接続/index.jsp">TOPへ戻る</a>
 </body>
 </html>

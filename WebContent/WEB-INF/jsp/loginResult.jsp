@@ -18,11 +18,11 @@ User loginUser = (User) session.getAttribute("loginUser");
 <% if(loginUser != null) { %>
 	<p>ログインに成功しました</p>
 	<p>ようこそ<%= loginUser.getName() %>さん</p>
-	<a href ="/DOCOTSUBUDOCOTSUBU/Main">社員情報管理画面へ</a>
-	<a href="/DOCOTSUBUDOCOTSUBU/index.jsp">TOPへ戻る</a>
+	<a href ="/社員情報管理システムDB接続/Main">社員情報管理画面へ</a>
+	<a href="/社員情報管理システムDB接続/index.jsp">TOPへ戻る</a>
 <%  }else { %>
 	<p>ログインに失敗しました</p>
-	<a href="/DOCOTSUBUDOCOTSUBU/index.jsp">TOPへ戻る</a>
+	<a href="/社員情報管理システムDB接続/index.jsp">TOPへ戻る</a>
 <% } %>
 </body>
 </html>
